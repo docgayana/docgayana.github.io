@@ -1,60 +1,122 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>example.com</title>
-    <style>
-      html, body {
-        height: 100%;
-      }
-      body {
-        background-color: #fff;
-        background: radial-gradient(circle at center, #fff 0%, #f8f8f8 75%, #ebebeb 100%);
-        color: #222;
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-        font-size: 1rem;
-        line-height: 1.5;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      main {
-        padding: 1rem;
-        text-align: center;
-      }
-      h1 {
-        font-size: 2.5rem;
-        line-height: 1.1;
-        margin: 0;
-      }
-      @media screen and (max-width: 480px) {
-        h1 {
-          font-size: 1.5rem;
-        }
-      }
-      h1::after {
-        content: "";
-        background-color: #ffe800;
-        background: repeating-linear-gradient(45deg, #ffe800, #ffe800 0.5rem, #222 0.5rem, #222 1.0rem);
-        display: block;
-        height: 0.5rem;
-        margin-top: 1rem;
-      }
-      img {
-        max-width: 100%;
-        height: auto;
-      }
-      p {
-        margin: 1rem 0 0 0;
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <h1>example.com</h1>
-      <p>Our website is under construction.</p>
-    </main>
-  </body>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Օրացույց</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="jquery-ui.min.css">
+<style>
+body {
+	margin: 15px;
+}
+
+#datepicker .ui-datepicker {
+	width: 614px !important;
+	border: none;
+}
+
+#datepicker .ui-datepicker-inline .ui-datepicker-group {
+	margin: 3px;
+}
+
+.datepicker .highlight {
+	background-color: lightgreen;
+}
+
+.input-table {
+	margin: 5px;
+	font-size: 20px;
+}
+
+.input-table input {
+	font-size: 20px;
+}
+</style>
+<script src="jquery.min.js"></script>
+<script src="jquery-ui.min.js"></script>
+<script src="datepicker-hy.js"></script>
+<script src="moment.min.js"></script>
+<script>
+            var days = 140;
+            $( function() {
+                var fromDate = $( "#fromDate" );
+                var daysCount = $( "#daysCount" );
+                daysCount.change( function(){
+                   days = parseInt(daysCount.val(), 10);
+                   var date = moment.utc(fromDate.val(),'DD.MM.YYYY');
+                   onSelect(date);
+                });
+                fromDate.change( function(){                  
+                  var date = moment.utc(fromDate.val(),'DD.MM.YYYY');
+                  onSelect(date);
+               });
+                fromDate.datepicker({
+                    default: new Date(),
+                    onSelect: onSelect
+                });
+                onSelect();
+            });
+            function onSelect(dateStr) {                
+                var datepickerFrom = $( "#datepickerFrom" );
+                var datepickerTo = $( "#datepickerTo" );
+                var fromDate = $( "#fromDate" );
+                
+                var toDate = $( "#toDate" );
+
+                var date;
+                if(dateStr)
+                    date = moment.utc(dateStr,'DD.MM.YYYY').toDate();
+                else date = new Date();
+                var datePlus = new Date(date);
+                datePlus.setDate(date.getDate()+days - 1);
+
+                fromDate.val(moment(date).format('DD.MM.YYYY'));         
+                toDate.val(moment(datePlus).format('DD.MM.YYYY'));
+
+                datepickerFrom.datepicker("destroy");
+                datepickerFrom.datepicker({
+                    inline: true,
+                    numberOfMonths: 3,
+                    onSelect: onSelect,
+                    minDate:date,
+                    maxDate:datePlus,
+                    defaultDate:date
+                });
+
+                datepickerTo.datepicker("destroy");       
+                datepickerTo.datepicker({
+                    inline: true,
+                    numberOfMonths: 3,
+                    onSelect: onSelect,
+                    minDate:date,
+                    maxDate:datePlus,
+                    defaultDate:datePlus
+                });
+                $('.datepicker').find('a.ui-state-highlight').removeClass('ui-state-highlight');   
+            }
+          </script>
+</head>
+<body>
+	<table class="input-table">
+		<tr>
+			<td><input id="fromDate" type="text" maxlength="10" size="10"></td>
+			<td>+ <input id="daysCount" type="text" maxlength="3" size="3"
+				value="140"> օր =
+			</td>
+			<td><input id="toDate" type="text" maxlength="10" size="10"
+				readonly></td>
+		</tr>
+	</table>
+	<div id="datepickerFrom" class="datepicker"></div>
+	<div id="datepickerTo" class="datepicker"></div>
+	<script>
+				  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+				  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+				
+				  ga('create', 'UA-83680063-1', 'auto');
+				  ga('send', 'pageview');
+				
+				</script>
+</body>
 </html>
